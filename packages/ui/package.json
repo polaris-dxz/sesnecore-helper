@@ -25,7 +25,11 @@
     "@extension/i18n": "workspace:*",
     "@extension/shared": "workspace:*",
     "@extension/storage": "workspace:*",
+    "@heroui/react": "^2.7.9",
+    "@heroui/system": "^2.4.16",
+    "@heroui/theme": "^2.4.16",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.16.0",
     "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
