@@ -24,7 +24,7 @@ const manifest = {
   name: '__MSG_extensionName__',
   browser_specific_settings: {
     gecko: {
-      id: 'example@example.com',
+      id: 'polarisdu@outlook.com',
       strict_min_version: '109.0',
     },
   },
@@ -72,7 +72,7 @@ const manifest = {
   devtools_page: 'devtools/index.html',
   web_accessible_resources: [
     {
-      resources: ['*.js', '*.css', '*.svg', 'icon-128.png', 'icon-34.png'],
+      resources: ['*.js', '*.css', '*.svg', '*.png', '*.jpg', '*.jpeg', '*.gif', 'icon-128.png', 'icon-34.png'],
       matches: ['*://*/*'],
     },
   ],

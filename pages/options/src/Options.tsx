@@ -1,25 +1,52 @@
 import '@src/Options.css';
-import { t } from '@extension/i18n';
-import { PROJECT_URL_OBJECT, useStorage, withErrorBoundary, withSuspense } from '@extension/shared';
+import '@radix-ui/themes/styles.css';
+import { SidebarMenu } from './components/SidebarMenu';
+import { menuConfig } from './config/menuConfig';
+import { useStorage, withErrorBoundary, withSuspense } from '@extension/shared';
 import { exampleThemeStorage } from '@extension/storage';
-import { cn, ErrorDisplay, LoadingSpinner, ToggleButton } from '@extension/ui';
+import { cn, ErrorDisplay, LoadingSpinner } from '@extension/ui';
+import { Theme, Flex, Text } from '@radix-ui/themes';
+import { useState } from 'react';
 
 const Options = () => {
   const { isLight } = useStorage(exampleThemeStorage);
-  const logo = isLight ? 'options/logo_horizontal.svg' : 'options/logo_horizontal_dark.svg';
+  const [selectedId, setSelectedId] = useState(menuConfig[0].id);
 
-  const goGithubSite = () => chrome.tabs.create(PROJECT_URL_OBJECT);
+  // 获取当前选中的菜单项
+  const selectedMenu = menuConfig.find(menu => menu.id === selectedId) || menuConfig[0];
+  const menuLabels = menuConfig.map(menu => menu.label);
+
+  const handleMenuSelect = (label: string) => {
+    const menu = menuConfig.find(menu => menu.label === label);
+    if (menu) {
+      setSelectedId(menu.id);
+    }
+  };
 
   return (
-    <div className={cn('App', isLight ? 'bg-slate-50 text-gray-900' : 'bg-gray-800 text-gray-100')}>
-      <button onClick={goGithubSite}>
-        <img src={chrome.runtime.getURL(logo)} className="App-logo" alt="logo" />
-      </button>
-      <p>
-        Edit <code>pages/options/src/Options.tsx</code>
-      </p>
-      <ToggleButton onClick={exampleThemeStorage.toggle}>{t('toggleTheme')}</ToggleButton>
-    </div>
+    <Theme appearance={isLight ? 'light' : 'dark'}>
+      <div className="mx-auto flex h-screen w-full max-w-[1200px]">
+        <SidebarMenu menuItems={menuLabels} selected={selectedMenu.label} onSelect={handleMenuSelect} />
+        <Flex
+          direction="column"
+          flexGrow="1"
+          align="center"
+          justify="start"
+          p="9"
+          className={cn(isLight ? 'bg-white' : 'bg-gray-950')}>
+          <div className="mx-auto w-full max-w-[1200px]">
+            <Flex align="center" justify="between">
+              <Text size="6" weight="bold" mb="6" align="left" className="w-full">
+                {selectedMenu.label}
+              </Text>
+            </Flex>
+            <Flex direction="column" align="center" gap="5" width="100%">
+              <selectedMenu.component />
+            </Flex>
+          </div>
+        </Flex>
+      </div>
+    </Theme>
   );
 };
 

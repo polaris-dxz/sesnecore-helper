@@ -8,38 +8,38 @@
     "message": "SenseCore Helper"
   },
   "toggleTheme": {
-    "message": "Toggle theme"
+    "message": "切换主题"
   },
   "injectButton": {
-    "message": "Click to inject Content Scripts"
+    "message": "点击注入内容脚本"
   },
   "greeting": {
-    "description": "Greeting message",
-    "message": "Hello, My name is $NAME$",
+    "description": "问候语",
+    "message": "你好，我的名字是 $NAME$",
     "placeholders": {
       "name": {
         "content": "$1",
-        "example": "John Doe"
+        "example": "张三"
       }
     }
   },
   "hello": {
-    "description": "Placeholder example",
-    "message": "Hello $1"
+    "description": "占位符示例",
+    "message": "你好 $1"
   },
   "displayErrorInfo": {
-    "message": "Error occur"
+    "message": "发生错误"
   },
   "displayErrorDescription": {
-    "message": "Sorry, something went wrong while loading the page."
+    "message": "抱歉，加载页面时出现问题。"
   },
   "displayErrorDetailsInfo": {
-    "message": "Error details:"
+    "message": "错误详情："
   },
   "displayErrorUnknownErrorInfo": {
-    "message": "Unknown error"
+    "message": "未知错误"
   },
   "displayErrorReset": {
-    "message": "Run Again"
+    "message": "重新运行"
   }
 }
