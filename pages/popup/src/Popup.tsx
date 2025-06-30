@@ -4,7 +4,7 @@ import { SwitchAccount, Gitlab } from './components';
 import { useStorage, withErrorBoundary, withSuspense } from '@extension/shared';
 import { exampleThemeStorage } from '@extension/storage';
 import { ErrorDisplay, LoadingSpinner } from '@extension/ui';
-import { Card, Theme, Tabs } from '@radix-ui/themes';
+import { Card, Theme, Tabs, Badge, Flex } from '@radix-ui/themes';
 
 const Popup = () => {
   const { isLight } = useStorage(exampleThemeStorage);
@@ -15,7 +15,14 @@ const Popup = () => {
         <Tabs.Root defaultValue="switchAccount">
           <Tabs.List>
             <Tabs.Trigger value="switchAccount">SwitchAccount</Tabs.Trigger>
-            <Tabs.Trigger value="gitlab">Gitlab</Tabs.Trigger>
+            <Tabs.Trigger value="gitlab">
+              <Flex align="center" gap="2">
+                Gitlab
+                <Badge color="orange" variant="soft" size="1">
+                  Beta
+                </Badge>
+              </Flex>
+            </Tabs.Trigger>
           </Tabs.List>
 
           <Tabs.Content value="switchAccount" style={{ paddingTop: '16px' }}>
