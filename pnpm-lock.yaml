@@ -268,6 +268,12 @@ importers:
         specifier: ^17.7.2
         version: 17.7.2
 
+  packages/openapi:
+    devDependencies:
+      '@extension/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+
   packages/shared:
     dependencies:
       react-error-boundary:
@@ -528,6 +534,9 @@ importers:
       '@extension/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@extension/openapi':
+        specifier: workspace:*
+        version: link:../../packages/openapi
       '@extension/shared':
         specifier: workspace:*
         version: link:../../packages/shared

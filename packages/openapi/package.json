@@ -1,0 +1,20 @@
+{
+  "name": "@extension/openapi",
+  "version": "0.5.0",
+  "description": "chrome extension - openapi client",
+  "type": "module",
+  "private": true,
+  "main": "index.mts",
+  "types": "index.mts",
+  "files": [
+    "**"
+  ],
+  "scripts": {
+    "clean:node_modules": "pnpx rimraf node_modules",
+    "clean:turbo": "rimraf .turbo",
+    "clean": "pnpm clean:turbo && pnpm clean:node_modules"
+  },
+  "devDependencies": {
+    "@extension/tsconfig": "workspace:*"
+  }
+}

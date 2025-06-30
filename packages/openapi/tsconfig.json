@@ -1,0 +1,11 @@
+{
+  "extends": "@extension/tsconfig/module",
+  "compilerOptions": {
+    "lib": ["dom"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": ["**/*"]
+}
