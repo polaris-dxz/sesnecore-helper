@@ -9,6 +9,8 @@ import {
   Cross2Icon,
   DotsVerticalIcon,
   CopyIcon,
+  CheckIcon,
+  ExclamationTriangleIcon,
 } from '@radix-ui/react-icons';
 import * as Toast from '@radix-ui/react-toast';
 import {
@@ -24,6 +26,7 @@ import {
   TextArea,
   Select,
   DropdownMenu,
+  AlertDialog,
 } from '@radix-ui/themes';
 import { useState, useEffect } from 'react';
 import type { AccountData, AccountMode, CreateAccountParams, UpdateAccountParams } from '@extension/openapi';
@@ -43,6 +46,10 @@ const SwitchAccountContent = () => {
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
+
+  // 删除确认对话框状态
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState<AccountData | null>(null);
 
   // 表单状态
   const [formData, setFormData] = useState<CreateAccountParams>({
@@ -182,13 +189,18 @@ const SwitchAccountContent = () => {
     }
   };
 
-  const handleDelete = async (account: AccountData) => {
-    if (!confirm(`确定要删除账户 ${account.username} 吗？`)) return;
+  const showDeleteConfirm = (account: AccountData) => {
+    setAccountToDelete(account);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!accountToDelete) return;
 
     try {
       const deleteData = {
-        id: account.id,
-        mode: account.mode,
+        id: accountToDelete.id,
+        mode: accountToDelete.mode,
       };
 
       const result = await deleteAccount(deleteData);
@@ -196,10 +208,17 @@ const SwitchAccountContent = () => {
 
       await fetchAccounts();
       showToast('账户删除成功');
+      setDeleteDialogOpen(false);
+      setAccountToDelete(null);
     } catch (error) {
       console.error('删除失败:', error);
       showToast('删除失败: ' + (error instanceof Error ? error.message : '未知错误'), 'error');
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setAccountToDelete(null);
   };
 
   const handleUsernameClick = (account: AccountData) => {
@@ -332,13 +351,27 @@ const SwitchAccountContent = () => {
           </Card>
         </Flex>
 
-        {/* Toast */}
-        <Toast.Root open={toastOpen} onOpenChange={setToastOpen}>
-          <Toast.Title>{toastType === 'success' ? '成功' : '错误'}</Toast.Title>
-          <Toast.Description>{toastMessage}</Toast.Description>
-          <Toast.Close />
+        <Toast.Root
+          open={toastOpen}
+          onOpenChange={setToastOpen}
+          duration={3000}
+          className={`toast-root toast-${toastType}`}>
+          <Flex align="center" gap="2">
+            {toastType === 'success' ? (
+              <CheckIcon style={{ color: '#10b981', flexShrink: 0 }} />
+            ) : (
+              <ExclamationTriangleIcon style={{ color: '#ef4444', flexShrink: 0 }} />
+            )}
+            <Flex direction="column" gap="1">
+              <Toast.Title className="toast-title">{toastType === 'success' ? '成功' : '错误'}</Toast.Title>
+              <Toast.Description className="toast-description">{toastMessage}</Toast.Description>
+            </Flex>
+          </Flex>
+          <Toast.Close className="toast-close">
+            <Cross2Icon />
+          </Toast.Close>
         </Toast.Root>
-        <Toast.Viewport />
+        <Toast.Viewport className="toast-viewport" />
       </>
     );
   }
@@ -439,7 +472,7 @@ const SwitchAccountContent = () => {
                               修改账户
                             </DropdownMenu.Item>
                             <DropdownMenu.Separator />
-                            <DropdownMenu.Item onSelect={() => handleDelete(account)} color="red">
+                            <DropdownMenu.Item onSelect={() => showDeleteConfirm(account)} color="red">
                               <TrashIcon />
                               删除账户
                             </DropdownMenu.Item>
@@ -478,16 +511,54 @@ const SwitchAccountContent = () => {
         </Flex>
       </Flex>
 
-      {/* Toast */}
-      <Toast.Root open={toastOpen} onOpenChange={setToastOpen}>
-        <Toast.Title>{toastType === 'success' ? '成功' : '错误'}</Toast.Title>
-        <Toast.Description>{toastMessage}</Toast.Description>
-        <Toast.Close />
+      {/* 删除确认对话框 */}
+      <AlertDialog.Root open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialog.Content style={{ maxWidth: 450 }}>
+          <AlertDialog.Title>确认删除</AlertDialog.Title>
+          <AlertDialog.Description size="2">
+            确定要删除账户 <strong>{accountToDelete?.username}</strong> 吗？此操作无法撤销。
+          </AlertDialog.Description>
+
+          <Flex gap="3" mt="4" justify="end">
+            <AlertDialog.Cancel>
+              <Button variant="soft" color="gray" onClick={cancelDelete}>
+                取消
+              </Button>
+            </AlertDialog.Cancel>
+            <AlertDialog.Action>
+              <Button variant="solid" color="red" onClick={handleDelete}>
+                删除账户
+              </Button>
+            </AlertDialog.Action>
+          </Flex>
+        </AlertDialog.Content>
+      </AlertDialog.Root>
+
+      <Toast.Root
+        open={toastOpen}
+        onOpenChange={setToastOpen}
+        duration={3000}
+        className={`toast-root toast-${toastType}`}>
+        <Flex align="center" gap="2">
+          {toastType === 'success' ? (
+            <CheckIcon style={{ color: '#10b981', flexShrink: 0 }} />
+          ) : (
+            <ExclamationTriangleIcon style={{ color: '#ef4444', flexShrink: 0 }} />
+          )}
+          <Flex direction="column" gap="1">
+            <Toast.Title className="toast-title">{toastType === 'success' ? '成功' : '错误'}</Toast.Title>
+            <Toast.Description className="toast-description">{toastMessage}</Toast.Description>
+          </Flex>
+        </Flex>
+        <Toast.Close className="toast-close">
+          <Cross2Icon />
+        </Toast.Close>
       </Toast.Root>
-      <Toast.Viewport />
+      <Toast.Viewport className="toast-viewport" />
     </>
   );
 };
+
 // 导出包装了 ToastProvider 的组件
 export const SwitchAccount = () => (
   <Toast.Provider>
