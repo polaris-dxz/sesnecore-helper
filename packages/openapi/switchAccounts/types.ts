@@ -10,7 +10,7 @@ export interface AccountData {
 }
 
 // 模式类型
-export type AccountMode = 'dev' | 'tech' | 'prod';
+export type AccountMode = string;
 
 // API 响应类型
 export interface ReadAccountResponse {

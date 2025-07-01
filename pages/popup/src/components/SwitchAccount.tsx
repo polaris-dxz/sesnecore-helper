@@ -1,5 +1,4 @@
 import { readAccount, createAccount, updateAccount, deleteAccount } from '@extension/openapi';
-import { PROJECT_URL_OBJECT } from '@extension/shared';
 import {
   PlusIcon,
   Pencil1Icon,
@@ -30,6 +29,151 @@ import {
 } from '@radix-ui/themes';
 import { useState, useEffect } from 'react';
 import type { AccountData, AccountMode, CreateAccountParams, UpdateAccountParams } from '@extension/openapi';
+
+interface EnvironmentConfig {
+  mode: AccountMode;
+  name: string;
+  signinUrl: string;
+  consoleUrl: string;
+  operationsUrl: string;
+}
+
+// 在文件顶部添加环境配置
+const ENVIRONMENT_CONFIGS: EnvironmentConfig[] = [
+  {
+    mode: 'dev',
+    name: '开发环境',
+    signinUrl: 'https://signin.sensecore.dev',
+    consoleUrl: 'https://console.sensecore.dev',
+    operationsUrl: 'https://operations.sensecore.dev',
+  },
+  {
+    mode: 'tech',
+    name: '测试环境',
+    signinUrl: 'https://signin.sensecore.tech',
+    consoleUrl: 'https://console.sensecore.tech',
+    operationsUrl: 'https://operations.sensecore.tech',
+  },
+  {
+    mode: 'cn-sh-02-dev',
+    name: '2.0 开发环境',
+    signinUrl: 'https://signin.cn-sh-02.sensecore.dev',
+    consoleUrl: 'https://console.cn-sh-02.sensecore.dev',
+    operationsUrl: 'https://operations.cn-sh-02.sensecore.dev',
+  },
+  {
+    mode: 'cn-sh-03-dev',
+    name: '2.0 测试环境',
+    signinUrl: 'https://signin.cn-sh-03.sensecore.dev',
+    consoleUrl: 'https://console.cn-sh-03.sensecore.dev',
+    operationsUrl: 'https://operations.cn-sh-03.sensecore.dev',
+  },
+  {
+    mode: 'prod',
+    name: '生产环境',
+    signinUrl: 'https://signin.sensecore.cn',
+    consoleUrl: 'https://console.sensecore.cn',
+    operationsUrl: 'https://operations.sensecore.cn',
+  },
+  {
+    mode: 'st-sh-01-prod',
+    name: '上海专有云环境',
+    signinUrl: 'https://signin.st-sh-01.sensecore.cn',
+    consoleUrl: 'https://console.st-sh-01.sensecore.cn',
+    operationsUrl: 'https://operations.st-sh-01.sensecore.cn',
+  },
+  {
+    mode: 'cn-gz-01-prod',
+    name: '广州生产环境',
+    signinUrl: 'https://signin.cn-gz-01.sensecore.cn',
+    consoleUrl: 'https://console.cn-gz-01.sensecore.cn',
+    operationsUrl: 'https://operations.cn-gz-01.sensecore.cn',
+  },
+  {
+    mode: 'cn-fj-01-prod',
+    name: '福建生产环境',
+    signinUrl: 'https://signin.cn-fj-01.thinkheadbd.com',
+    consoleUrl: 'https://console.cn-fj-01.thinkheadbd.com',
+    operationsUrl: 'https://operations.cn-fj-01.thinkheadbd.com',
+  },
+  {
+    mode: 'cn-cq-01-prod',
+    name: '重庆生产环境',
+    signinUrl: 'https://signin.cn-cq-01.cloudaidc.com',
+    consoleUrl: 'https://console.cn-cq-01.cloudaidc.com',
+    operationsUrl: 'https://operations.cn-cq-01.cloudaidc.com',
+  },
+  {
+    mode: 'ms-sc-01-prod',
+    name: '马来生产环境',
+    signinUrl: 'https://signin.ms-sc-01.maoshanwangtech.com',
+    consoleUrl: 'https://console.ms-sc-01.maoshanwangtech.com',
+    operationsUrl: 'https://operations.ms-sc-01.maoshanwangtech.com',
+  },
+  {
+    mode: 'cn-jn-01-prod',
+    name: '济南生产环境',
+    signinUrl: 'https://signin.cn-jn-01.sdjstjn.com',
+    consoleUrl: 'https://console.cn-jn-01.sdjstjn.com',
+    operationsUrl: 'https://operations.cn-jn-01.sdjstjn.com',
+  },
+  {
+    mode: 'cn-sz-01-prod',
+    name: '深圳前海生产环境',
+    signinUrl: 'https://signin.cn-sz-01.qhsgaicc.com',
+    consoleUrl: 'https://console.cn-sz-01.qhsgaicc.com',
+    operationsUrl: 'https://operations.cn-sz-01.qhsgaicc.com',
+  },
+  {
+    mode: 'cn-fz-01-prod',
+    name: '福建二期生产环境',
+    signinUrl: 'https://signin.cn-fz-01.fjscms.com',
+    consoleUrl: 'https://console.cn-fz-01.fjscms.com',
+    operationsUrl: 'https://operations.cn-fz-01.fjscms.com',
+  },
+  {
+    mode: 'cn-sh-jz-prod',
+    name: '上海精智生产环境',
+    signinUrl: 'https://signin.cn-sh-jz.jingzhi-sh.com',
+    consoleUrl: 'https://console.cn-sh-jz.jingzhi-sh.com',
+    operationsUrl: 'https://operations.cn-sh-jz.jingzhi-sh.com',
+  },
+  {
+    mode: 'sensecore-stack-02-tech',
+    name: 'MaaS Stack 02 测试环境',
+    signinUrl: 'https://signin.sensecore-stack-02.sensecore.tech',
+    consoleUrl: 'https://console.sensecore-stack-02.sensecore.tech',
+    operationsUrl: 'https://operations.sensecore-stack-02.sensecore.tech',
+  },
+  {
+    mode: 'sensecore-stack-01-tech',
+    name: 'MaaS Stack 01 测试环境',
+    signinUrl: 'https://signin.sensecore-stack-01.sensecore.tech',
+    consoleUrl: 'https://console.sensecore-stack-01.sensecore.tech',
+    operationsUrl: 'https://operations.sensecore-stack-01.sensecore.tech',
+  },
+  {
+    mode: 'cn-tj-01-prod',
+    name: '天津西青生产环境',
+    signinUrl: 'https://signin.cn-tj-01.sensecore.cn',
+    consoleUrl: 'https://console.cn-tj-01.sensecore.cn',
+    operationsUrl: 'https://operations.cn-tj-01.sensecore.cn',
+  },
+  {
+    mode: 'cn-sz-02-prod',
+    name: '深圳 02a 生产环境',
+    signinUrl: 'https://signin.cn-sz-02.sensecore.cn',
+    consoleUrl: 'https://console.cn-sz-02.sensecore.cn',
+    operationsUrl: 'https://operations.cn-sz-02.sensecore.cn',
+  },
+  {
+    mode: 'cn-hf-01-prod',
+    name: '合肥生产环境',
+    signinUrl: 'https://signin.cn-hf-01.sensecore.cn/',
+    consoleUrl: 'https://console.cn-hf-01.sensecore.cn',
+    operationsUrl: 'https://operations.cn-hf-01.sensecore.cn',
+  },
+];
 
 type ViewMode = 'list' | 'create' | 'edit';
 
@@ -229,8 +373,6 @@ const SwitchAccountContent = () => {
     console.log('描述:', account.desc);
   };
 
-  const goGithubSite = () => chrome.tabs.create(PROJECT_URL_OBJECT);
-
   // 修正复制功能函数
   const copyToClipboard = async (text: string, label: string) => {
     try {
@@ -253,6 +395,13 @@ const SwitchAccountContent = () => {
       const content = `${account.username}:${account.password}`;
       copyToClipboard(content, '租户账密');
     }
+  };
+
+  // 跳转到对应环境的运营后台
+  const goOperationsPanel = () => {
+    const currentEnv = ENVIRONMENT_CONFIGS.find(config => config.mode === selectedMode);
+    const operationsUrl = currentEnv?.operationsUrl || ENVIRONMENT_CONFIGS[0].operationsUrl;
+    chrome.tabs.create({ url: operationsUrl });
   };
 
   if (loading && accounts.length === 0) {
@@ -389,11 +538,11 @@ const SwitchAccountContent = () => {
             <Select.Root value={selectedMode} onValueChange={(value: AccountMode) => setSelectedMode(value)}>
               <Select.Trigger />
               <Select.Content>
-                <Select.Item value="dev">开发环境</Select.Item>
-                <Select.Item value="tech">测试环境</Select.Item>
-                <Select.Item value="cn-sh-02-dev">2.0 开发环境</Select.Item>
-                <Select.Item value="cn-sh-03-dev">2.0 测试环境</Select.Item>
-                <Select.Item value="prod">生产环境</Select.Item>
+                {ENVIRONMENT_CONFIGS.map(config => (
+                  <Select.Item key={config.mode} value={config.mode}>
+                    {config.name}
+                  </Select.Item>
+                ))}
               </Select.Content>
             </Select.Root>
             <Button onClick={handleRefresh} variant="soft" size="1">
@@ -504,9 +653,9 @@ const SwitchAccountContent = () => {
           <Text size="2" color="gray">
             {selectedMode} 环境 · 共 {accounts.length} 个账户
           </Text>
-          <Button onClick={goGithubSite} variant="ghost" size="1">
+          <Button onClick={goOperationsPanel} variant="ghost" size="1">
             <ExternalLinkIcon />
-            访问项目主页
+            账号密码不正确？联系管理员修改
           </Button>
         </Flex>
       </Flex>
