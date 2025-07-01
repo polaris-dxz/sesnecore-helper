@@ -68,7 +68,7 @@ export const createAccount = async (params: CreateAccountParams): Promise<ApiRes
     const response = await fetch(`${BASE_URL}/api/plugin/createAccount`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
       },
       body: JSON.stringify(params),
     });
@@ -93,7 +93,7 @@ export const updateAccount = async (params: UpdateAccountParams): Promise<ApiRes
     const response = await fetch(`${BASE_URL}/api/plugin/updateAccount`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
       },
       body: JSON.stringify(params),
     });
@@ -118,7 +118,7 @@ export const deleteAccount = async (params: DeleteAccountParams): Promise<ApiRes
     const response = await fetch(`${BASE_URL}/api/plugin/deleteAccount`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
       },
       body: JSON.stringify(params),
     });

@@ -5,4 +5,5 @@ export type {
   ReadAccountResponse,
   ReadAccountParams,
   CreateAccountParams,
+  UpdateAccountParams,
 } from './switchAccounts/types';

@@ -26,7 +26,7 @@ import {
   DropdownMenu,
 } from '@radix-ui/themes';
 import { useState, useEffect } from 'react';
-import type { AccountData, AccountMode, CreateAccountParams } from '@extension/openapi';
+import type { AccountData, AccountMode, CreateAccountParams, UpdateAccountParams } from '@extension/openapi';
 
 type ViewMode = 'list' | 'create' | 'edit';
 
@@ -104,9 +104,9 @@ const SwitchAccountContent = () => {
     setFormData({
       username: account.username,
       password: account.password,
-      desc: account.desc,
+      desc: account.desc || '',
       mode: account.mode,
-      type: account.type,
+      type: account.type || 'tenant',
       tenant_code: account.tenant_code || '',
     });
     setEditingAccount(account);
@@ -153,14 +153,20 @@ const SwitchAccountContent = () => {
     try {
       setCreating(true);
 
-      const updateData = {
+      const updateData: UpdateAccountParams = {
         id: editingAccount.id,
         password: formData.password,
         desc: formData.desc,
         mode: editingAccount.mode,
         type: formData.type,
-        tenant_code: formData.tenant_code,
       };
+
+      // 只有当 tenant_code 有值时才添加该字段
+      if (formData.tenant_code) {
+        updateData.tenant_code = formData.tenant_code;
+      }
+
+      console.log('发送更新数据:', updateData);
 
       const result = await updateAccount(updateData);
       console.log('更新结果:', result);
