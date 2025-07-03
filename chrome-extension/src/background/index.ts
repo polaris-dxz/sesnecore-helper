@@ -33,4 +33,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // Required for async response
     return true;
   }
+
+  // 其他消息类型不需要异步处理
+  return false;
 });

@@ -232,6 +232,7 @@ const SwitchAccountContent = () => {
 
   useEffect(() => {
     fetchAccounts(selectedMode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMode]);
 
   const resetForm = () => {
