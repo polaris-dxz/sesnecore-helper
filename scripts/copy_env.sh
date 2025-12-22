@@ -6,3 +6,4 @@ if [ ! -f ".env" ] && [ -f ".example.env" ]; then
     cp .example.env .env
     echo ".example.env has been copied to .env"
 fi
+

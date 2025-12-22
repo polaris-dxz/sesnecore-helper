@@ -15,3 +15,4 @@ if [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 else
   echo "Version format <$1> isn't correct, proper format is <0.0.0>";
 fi
+

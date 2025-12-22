@@ -89,3 +89,4 @@ create_new_file() {
 parse_arguments "$@"
 validate_env_keys
 create_new_file
+
