@@ -44,6 +44,16 @@ export default config(
         chrome: 'readonly',
       },
     },
+  },
+  {
+    files: ['**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        ...node,
+      },
+    },
     settings: {
       react: {
         version: 'detect',
